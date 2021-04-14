@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31019.35
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AITIssueTracker.API", "AITIssueTracker.API\AITIssueTracker.API.csproj", "{1CDBABF0-D88C-46DD-B62F-BD3BFAB2DD4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AITIssueTracker.Model", "AITIssueTracker.Model\AITIssueTracker.Model.csproj", "{A9CB9277-91DE-4BB8-899F-699AAF32A22A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1CDBABF0-D88C-46DD-B62F-BD3BFAB2DD4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CDBABF0-D88C-46DD-B62F-BD3BFAB2DD4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CDBABF0-D88C-46DD-B62F-BD3BFAB2DD4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CDBABF0-D88C-46DD-B62F-BD3BFAB2DD4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9CB9277-91DE-4BB8-899F-699AAF32A22A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9CB9277-91DE-4BB8-899F-699AAF32A22A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9CB9277-91DE-4BB8-899F-699AAF32A22A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9CB9277-91DE-4BB8-899F-699AAF32A22A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EBC2BC6F-68BF-46F6-9B19-8B25B25D2FF3}
+	EndGlobalSection
+EndGlobal
