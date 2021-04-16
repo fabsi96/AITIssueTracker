@@ -69,14 +69,16 @@ namespace AITIssueTracker.API.v0._1_Controller
         /// <summary>
         /// Assign a new issue to a project.
         /// </summary>
+        /// <param name="projectId"></param>
         /// <param name="newProjectIssue"></param>
         /// 
         [HttpPost]
-        [Route("project")]
+        [Route("project/{projectId}")]
         public async Task<IActionResult> PostNewIssueToProjectAsync(
-            [FromBody] ProjectIssueForm newProjectIssue)
+            [FromRoute] Guid projectId,
+            [FromBody] IssueForm newIssue)
         {
-            IssueView issue = await Manager.SaveProjectIssueAsync(newProjectIssue);
+            IssueView issue = await Manager.SaveProjectIssueAsync(newIssue, projectId);
 
             if (issue is null)
             {
@@ -92,11 +94,12 @@ namespace AITIssueTracker.API.v0._1_Controller
         /// <param name="newFeatureIssue"></param>
         /// 
         [HttpPost]
-        [Route("feature")]
+        [Route("feature/{featureId}")]
         public async Task<IActionResult> PostNewIssueToFeatureAsync(
-            [FromBody] FeatureIssueForm newFeatureIssue)
+            [FromRoute] Guid featureId,
+            [FromBody] IssueForm newIssue)
         {
-            IssueView issue = await Manager.SaveFeatureIssueAsync(newFeatureIssue);
+            IssueView issue = await Manager.SaveFeatureIssueAsync(newIssue, featureId);
 
             if (issue is null)
             {
@@ -237,26 +240,26 @@ namespace AITIssueTracker.API.v0._1_Controller
 
         public async Task<List<IssueView>> GetIssuesOfProjectAsync(Guid projectId)
         {
-            List<ProjectIssue> issues = await DbContext.SelectIssuesOfProjectAsync(projectId);
+            List<Issue> issues = await DbContext.SelectIssuesOfProjectAsync(projectId);
             return issues?.ConvertAll(c => c.AsView());
         }
 
         public async Task<List<IssueView>> GetIssuesOfFeatureAsync(Guid featureId)
         {
-            List<FeatureIssue> issues = await DbContext.SelectIssuesOfFeatureAsync(featureId);
+            List<Issue> issues = await DbContext.SelectIssuesOfFeatureAsync(featureId);
             return issues?.ConvertAll(c => c.AsView());
         }
 
-        public async Task<IssueView> SaveProjectIssueAsync(ProjectIssueForm newProjectIssue)
+        public async Task<IssueView> SaveProjectIssueAsync(IssueForm issue, Guid projectId)
         {
-            ProjectIssue newIssue = new ProjectIssue(newProjectIssue);
-            return await DbContext.InsertNewProjectIssueAsync(newIssue) == 1 ? newIssue.AsView() : null;
+            Issue issueToSave = new Issue(issue);
+            return await DbContext.InsertNewProjectIssueAsync(issueToSave, projectId) == 1 ? issueToSave.AsView() : null;
         }
 
-        public async Task<IssueView> SaveFeatureIssueAsync(FeatureIssueForm newFeatureIssue)
+        public async Task<IssueView> SaveFeatureIssueAsync(IssueForm issue, Guid featureId)
         {
-            FeatureIssue newIssue = new FeatureIssue(newFeatureIssue);
-            return await DbContext.InsertNewFeatureIssueAsync(newIssue) == 1 ? newIssue.AsView() : null;
+            Issue newIssue = new Issue(issue);
+            return await DbContext.InsertNewFeatureIssueAsync(newIssue, featureId) == 1 ? newIssue.AsView() : null;
         }
 
         public async Task<bool> DeleteIssueFromProjectAsync(Guid issueId)
@@ -281,7 +284,7 @@ namespace AITIssueTracker.API.v0._1_Controller
             if (!userExists)
                 return false;
 
-            return await DbContext.InsertUserToIssueAsync(IssueContext.PROJECT_ISSUE, issueId, username) == 1;
+            return await DbContext.InsertUserToIssueAsync(issueId, username) == 1;
         }
 
         public async Task<bool> AddUserToFeatureIssueAsync(Guid issueId, string username)
@@ -296,17 +299,17 @@ namespace AITIssueTracker.API.v0._1_Controller
             if (!userExists)
                 return false;
 
-            return await DbContext.InsertUserToIssueAsync(IssueContext.FEATURE_ISSUE, issueId, username) == 1;
+            return await DbContext.InsertUserToIssueAsync(issueId, username) == 1;
         }
 
         public async Task<bool> RemoveUserFromProjectIssueAsync(Guid issueId, string username)
         {
-            return await DbContext.DeleteUserFromIssueAsync(IssueContext.PROJECT_ISSUE, issueId, username) == 1;
+            return await DbContext.DeleteUserFromIssueAsync(issueId, username) == 1;
         }
 
         public async Task<bool> RemoveUserFromFeatureIssueAsync(Guid issueId, string username)
         {
-            return await DbContext.DeleteUserFromIssueAsync(IssueContext.FEATURE_ISSUE, issueId, username) == 1;
+            return await DbContext.DeleteUserFromIssueAsync(issueId, username) == 1;
         }
     }
 
@@ -314,6 +317,31 @@ namespace AITIssueTracker.API.v0._1_Controller
     {
         public const string PROJECT_ISSUE = "project-issue";
         public const string FEATURE_ISSUE = "feature-issue";
+
+        /* === SQL Statements === */
+
+        // === Basic ===
+        private const string SQL_SELECT_PROJECT_ISSUES = "select * from \"issue\" as i join \"project_issue\" as pi on i.id = pi.issue_id and pi.project_id=@project_id;";
+        private const string SQL_SELECT_FEATURE_ISSUES = "select * from \"issue\" as i join \"feature_issue\" as fi on i.id=fi.issue_id and fi.feature_id=@feature_id;";
+
+        private const string SQL_INSERT_ISSUE = "insert into \"issue\" " +
+                                                  " (id, title, description, issue_type, effort_estimation, status) " +
+                                                  " values " +
+                                                  " (@id, @title, @description, @issue_type, @effort_estimation, @status);";
+        private const string SQL_INSERT_PROJECT_ISSUE = "insert into \"project_issue\" (issue_id, project_id) values (@issue_id, @project_id);";
+        private const string SQL_INSERT_FEATURE_ISSUE = "insert into \"feature_issue\" (issue_id, feature_id) values (@issue_id, @feature_id);";
+
+        private const string SQL_DELETE_ISSUE_BY_ID = "delete from \"issue\" where id=@id;";
+        private const string SQL_DELETE_ISSUE_FROM_PROJECT_BY_ID = "delete from \"project_issue\" where issue_id=@issue_id;";
+        private const string SQL_DELETE_ISSUE_FROM_FEATURE_BY_ID = "delete from \"feature_issue\" where issue_id=@issue_id;";
+
+        // === Extended ===
+        private const string SQL_SELECT_PROJECT_OF_PROJECT_ISSUE = "select * from \"project\" as p join \"project_issue\" as pi on p.id = pi.project_id and pi.issue_id = @issue_id;";
+        private const string SQL_SELECT_PROJECT_OF_FEATURE_ISSUE = "select * from \"project\" as p join \"feature\" as f on p.id = f.project_id join \"feature_issue\" as fi on f.id = fi.feature_id and fi.issue_id=@issue_id;";
+
+        private const string SQL_INSERT_USER_TO_ISSUE = "insert into \"issue_user\" (issue_id, username) values (@issue_id, @username);";
+
+        private const string SQL_DELETE_USER_FROM_ISSUE = "delete from \"issue_user\" where issue_id=@issue_id and username=@username;";
 
         private string ConnectionString
         {
@@ -330,7 +358,7 @@ namespace AITIssueTracker.API.v0._1_Controller
             Settings = settings;
         }
 
-        public async Task<List<ProjectIssue>> SelectIssuesOfProjectAsync(Guid projectId)
+        public async Task<List<Issue>> SelectIssuesOfProjectAsync(Guid projectId)
         {
 
             try
@@ -338,16 +366,15 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_PROJECT_ISSUES = "select * from \"issue_project\" where project_id=@project_id;";
                 cmd.CommandText = SQL_SELECT_PROJECT_ISSUES;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
 
                 await cmd.PrepareAsync();
                 NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                List<ProjectIssue> issues = new List<ProjectIssue>();
+                List<Issue> issues = new List<Issue>();
                 while (await reader.ReadAsync())
                 {
-                    issues.Add(new ProjectIssue(reader));
+                    issues.Add(new Issue(reader));
                 }
                 await cmd.DisposeAsync();
 
@@ -364,23 +391,22 @@ namespace AITIssueTracker.API.v0._1_Controller
             }
         }
 
-        public async Task<List<FeatureIssue>> SelectIssuesOfFeatureAsync(Guid featureId)
+        public async Task<List<Issue>> SelectIssuesOfFeatureAsync(Guid featureId)
         {
             try
             {
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_PROJECT_ISSUES = "select * from \"issue_feature\" where feature_id=@feature_id;";
-                cmd.CommandText = SQL_SELECT_PROJECT_ISSUES;
+                cmd.CommandText = SQL_SELECT_FEATURE_ISSUES;
                 cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = featureId;
 
                 await cmd.PrepareAsync();
                 NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                List<FeatureIssue> issues = new List<FeatureIssue>();
+                List<Issue> issues = new List<Issue>();
                 while (await reader.ReadAsync())
                 {
-                    issues.Add(new FeatureIssue(reader));
+                    issues.Add(new Issue(reader));
                 }
                 await cmd.DisposeAsync();
 
@@ -397,33 +423,69 @@ namespace AITIssueTracker.API.v0._1_Controller
             }
         }
 
-        public async Task<int> InsertNewProjectIssueAsync(ProjectIssue newProjectIssue)
+        public async Task<int> InsertNewProjectIssueAsync(Issue issue, Guid projectId)
         {
             try
             {
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_INSERT_PROJECT_ISSUE = "insert into \"issue_project\" " +
-                                                  " (project_id, title, description, issue_type, effort_estimation, status) " +
-                                                  " values " +
-                                                  " (@project_id, @title, @description, @issue_type, @effort_estimation, @status);";
-                cmd.CommandText = SQL_INSERT_PROJECT_ISSUE;
-                cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = newProjectIssue.ProjectId;
-                cmd.Parameters.Add("@title", NpgsqlDbType.Text).Value = newProjectIssue.Title;
-                cmd.Parameters.Add("@description", NpgsqlDbType.Text).Value = newProjectIssue.Description;
-                cmd.Parameters.Add("@issue_type", NpgsqlDbType.Smallint).Value = (int)newProjectIssue.Type;
-                cmd.Parameters.Add("@effort_estimation", NpgsqlDbType.Integer).Value = newProjectIssue.EffortEstimation;
-                cmd.Parameters.Add("@status", NpgsqlDbType.Smallint).Value = (int)newProjectIssue.Status;
+                cmd.Transaction = await conn.BeginTransactionAsync();
 
+                cmd.CommandText = SQL_INSERT_ISSUE;
+                cmd.Parameters.Add("@id", NpgsqlDbType.Uuid).Value = issue.Id;
+                cmd.Parameters.Add("@title", NpgsqlDbType.Text).Value = issue.Title;
+                cmd.Parameters.Add("@description", NpgsqlDbType.Text).Value = issue.Description;
+                cmd.Parameters.Add("@issue_type", NpgsqlDbType.Varchar).Value = issue.Type.ToString();
+                cmd.Parameters.Add("@effort_estimation", NpgsqlDbType.Integer).Value = issue.EffortEstimation;
+                cmd.Parameters.Add("@status", NpgsqlDbType.Varchar).Value = issue.Status.ToString();
+                
                 await cmd.PrepareAsync();
                 int res = await cmd.ExecuteNonQueryAsync();
-                await cmd.DisposeAsync();
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
 
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                // CleanUp
+                cmd.Parameters.Clear();
+
+                cmd.CommandText = SQL_INSERT_PROJECT_ISSUE;
+                cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issue.Id;
+                cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
+
+                await cmd.PrepareAsync();
+                res = await cmd.ExecuteNonQueryAsync();
+
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
+
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                await cmd.Transaction.CommitAsync();
+
+                // CleanUp
+                await cmd.DisposeAsync();
                 await conn.CloseAsync();
                 await conn.DisposeAsync();
 
-                return res == 1 ? 1 : -1;
+                return 1;
 
             }
             catch (Exception e)
@@ -433,33 +495,69 @@ namespace AITIssueTracker.API.v0._1_Controller
             }
         }
 
-        public async Task<int> InsertNewFeatureIssueAsync(FeatureIssue newFeatureIssue)
+        public async Task<int> InsertNewFeatureIssueAsync(Issue issue, Guid featureId)
         {
             try
             {
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_INSERT_PROJECT_ISSUE = "insert into \"issue_feature\" " +
-                                                  " (feature_id, title, description, issue_type, effort_estimation, status) " +
-                                                  " values " +
-                                                  " (@feature_id, @title, @description, @issue_type, @effort_estimation, @status);";
-                cmd.CommandText = SQL_INSERT_PROJECT_ISSUE;
-                cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = newFeatureIssue.FeatureId;
-                cmd.Parameters.Add("@title", NpgsqlDbType.Text).Value = newFeatureIssue.Title;
-                cmd.Parameters.Add("@description", NpgsqlDbType.Text).Value = newFeatureIssue.Description;
-                cmd.Parameters.Add("@issue_type", NpgsqlDbType.Smallint).Value = (int)newFeatureIssue.Type;
-                cmd.Parameters.Add("@effort_estimation", NpgsqlDbType.Integer).Value = newFeatureIssue.EffortEstimation;
-                cmd.Parameters.Add("@status", NpgsqlDbType.Smallint).Value = (int)newFeatureIssue.Status;
+                cmd.Transaction = await conn.BeginTransactionAsync();
+
+                cmd.CommandText = SQL_INSERT_ISSUE;
+                cmd.Parameters.Add("@id", NpgsqlDbType.Uuid).Value = issue.Id;
+                cmd.Parameters.Add("@title", NpgsqlDbType.Text).Value = issue.Title;
+                cmd.Parameters.Add("@description", NpgsqlDbType.Text).Value = issue.Description;
+                cmd.Parameters.Add("@issue_type", NpgsqlDbType.Varchar).Value = issue.Type.ToString();
+                cmd.Parameters.Add("@effort_estimation", NpgsqlDbType.Integer).Value = issue.EffortEstimation;
+                cmd.Parameters.Add("@status", NpgsqlDbType.Varchar).Value = issue.Status.ToString();
 
                 await cmd.PrepareAsync();
                 int res = await cmd.ExecuteNonQueryAsync();
-                await cmd.DisposeAsync();
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
 
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                // CleanUp
+                cmd.Parameters.Clear();
+
+                cmd.CommandText = SQL_INSERT_FEATURE_ISSUE;
+                cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issue.Id;
+                cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = featureId;
+
+                await cmd.PrepareAsync();
+                res = await cmd.ExecuteNonQueryAsync();
+
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
+
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                await cmd.Transaction.CommitAsync();
+
+                // CleanUp
+                await cmd.DisposeAsync();
                 await conn.CloseAsync();
                 await conn.DisposeAsync();
 
-                return res == 1 ? 1 : -1;
+                return 1;
 
             }
             catch (Exception e)
@@ -476,18 +574,55 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_DELETE_FROM_PROJECT_BY_ID = "delete from \"issue_project\" where id=@id;";
-                cmd.CommandText = SQL_DELETE_FROM_PROJECT_BY_ID;
-                cmd.Parameters.Add("@id", NpgsqlDbType.Uuid).Value = issueId;
+                cmd.Transaction = await conn.BeginTransactionAsync();
+
+                cmd.CommandText = SQL_DELETE_ISSUE_FROM_PROJECT_BY_ID;
+                cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issueId;
 
                 await cmd.PrepareAsync();
                 int res = await cmd.ExecuteNonQueryAsync();
-                await cmd.DisposeAsync();
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
 
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                // CleanUp
+                cmd.Parameters.Clear();
+
+                cmd.CommandText = SQL_DELETE_ISSUE_BY_ID;
+                cmd.Parameters.Add("@id", NpgsqlDbType.Uuid).Value = issueId;
+
+                await cmd.PrepareAsync();
+                res = await cmd.ExecuteNonQueryAsync();
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
+
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                await cmd.Transaction.CommitAsync();
+
+                // CleanUp
+                await cmd.DisposeAsync();
                 await conn.CloseAsync();
                 await conn.DisposeAsync();
 
-                return res != -1 ? 1 : -1;
+                return 1;
             }
             catch (Exception e)
             {
@@ -495,6 +630,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                 return -1;
             }
         }
+
         public async Task<int> DeleteIssueFromFeatureById(Guid issueId)
         {
             try
@@ -502,18 +638,55 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_DELETE_FROM_FEATURE_BY_ID = "delete from \"issue_feature\" where id=@id;";
-                cmd.CommandText = SQL_DELETE_FROM_FEATURE_BY_ID;
-                cmd.Parameters.Add("@id", NpgsqlDbType.Uuid).Value = issueId;
+                cmd.Transaction = await conn.BeginTransactionAsync();
+
+                cmd.CommandText = SQL_DELETE_ISSUE_FROM_FEATURE_BY_ID;
+                cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issueId;
 
                 await cmd.PrepareAsync();
                 int res = await cmd.ExecuteNonQueryAsync();
-                await cmd.DisposeAsync();
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
 
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                // CleanUp
+                cmd.Parameters.Clear();
+
+                cmd.CommandText = SQL_DELETE_ISSUE_BY_ID;
+                cmd.Parameters.Add("@id", NpgsqlDbType.Uuid).Value = issueId;
+
+                await cmd.PrepareAsync();
+                res = await cmd.ExecuteNonQueryAsync();
+                if (res != 1)
+                {
+                    // Error
+                    await cmd.Transaction.RollbackAsync();
+
+                    // CleanUp
+                    await cmd.DisposeAsync();
+                    await conn.CloseAsync();
+                    await conn.DisposeAsync();
+
+                    return -1;
+                }
+
+                await cmd.Transaction.CommitAsync();
+
+                // CleanUp
+                await cmd.DisposeAsync();
                 await conn.CloseAsync();
                 await conn.DisposeAsync();
 
-                return res != -1 ? 1 : -1;
+                return 1;
             }
             catch (Exception e)
             {
@@ -529,18 +702,10 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_PROJECT_OF_PROJECT_ISSUE = "select * from \"project\" as p join \"issue_project\" as issp on p.id = issp.project_id and issp.id = @issue_id;";
-                string SQL_SELECT_PROJECT_OF_FEATURE_ISSUE = "select * from \"project\" as p join \"feature\" as f on p.id = f.project_id join \"issue_feature\" as issf on f.id = issf.feature_id and issf.id=@issue_id;";
-                switch (ISSUE_TYPE)
-                {
-                    case PROJECT_ISSUE:
-                        cmd.CommandText = SQL_SELECT_PROJECT_OF_PROJECT_ISSUE;
-                        break;
-
-                    case FEATURE_ISSUE:
-                        cmd.CommandText = SQL_SELECT_PROJECT_OF_FEATURE_ISSUE;
-                        break;
-                }
+                cmd.CommandText = ISSUE_TYPE == PROJECT_ISSUE
+                    ? SQL_SELECT_PROJECT_OF_PROJECT_ISSUE
+                    : SQL_SELECT_PROJECT_OF_FEATURE_ISSUE;
+                
                 cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issueId;
 
                 await cmd.PrepareAsync();
@@ -570,28 +735,15 @@ namespace AITIssueTracker.API.v0._1_Controller
             }
         }
 
-        public async Task<int> InsertUserToIssueAsync(string ISSUE_TYPE, Guid issueId, string username)
+        public async Task<int> InsertUserToIssueAsync(Guid issueId, string username)
         {
             try
             {
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_INSERT_ISSUE_PROJECT_USER = "insert into \"issue_project_user\" (issue_project_id, username) values (@issue_id, @username);";
-                string SQL_INSERT_ISSUE_FEATURE_USER = "insert into \"issue_feature_user\" (issue_feature_id, username) values (@issue_id, @username);";
-                switch (ISSUE_TYPE)
-                {
-                    case PROJECT_ISSUE:
-                        cmd.CommandText = SQL_INSERT_ISSUE_PROJECT_USER;
-                        break;
+                cmd.CommandText = SQL_INSERT_USER_TO_ISSUE;
 
-                    case FEATURE_ISSUE:
-                        cmd.CommandText = SQL_INSERT_ISSUE_FEATURE_USER;
-                        break;
-
-                    default:
-                        break;
-                }
                 cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issueId;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
 
@@ -612,28 +764,15 @@ namespace AITIssueTracker.API.v0._1_Controller
             }
         }
 
-        public async Task<int> DeleteUserFromIssueAsync(string ISSUE_TYPE, Guid issueId, string username)
+        public async Task<int> DeleteUserFromIssueAsync(Guid issueId, string username)
         {
             try
             {
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_DELETE_ISSUE_PROJECT_USER = "delete from \"issue_project_user\" where issue_project_id=@issue_id and username=@username;";
-                string SQL_DELETE_ISSUE_FEATURE_USER = "delete from \"issue_feature_user\" where issue_feature_id=@issue_id and username=@username;";
-                switch (ISSUE_TYPE)
-                {
-                    case PROJECT_ISSUE:
-                        cmd.CommandText = SQL_DELETE_ISSUE_PROJECT_USER;
-                        break;
+                cmd.CommandText = SQL_DELETE_USER_FROM_ISSUE;
 
-                    case FEATURE_ISSUE:
-                        cmd.CommandText = SQL_DELETE_ISSUE_FEATURE_USER;
-                        break;
-
-                    default:
-                        break;
-                }
                 cmd.Parameters.Add("@issue_id", NpgsqlDbType.Uuid).Value = issueId;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
 

@@ -10,7 +10,7 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
 {
     public class ProjectIssue : IViewModel<IssueView>
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public Guid ProjectId { get; set; }
 

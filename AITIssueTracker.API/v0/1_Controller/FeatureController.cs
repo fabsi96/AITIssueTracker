@@ -179,10 +179,16 @@ namespace AITIssueTracker.API.v0._1_Controller
 
     public class FeatureContext
     {
-        private const string SQL_INSERT_NEW = "insert into \"feature\" (title, description, deadline, startdate, status, project_id) " +
-                                              " values (@title, @description, @deadline, @startdate, @status, @project_id);";
+        // === Basic ===
+        private const string SQL_INSERT_NEW = "insert into \"feature\" (project_id, title, description, deadline, startdate, status) " +
+                                              " values (@project_id, @title, @description, @deadline, @startdate, @status);";
         private const string SQL_SELECT_BY_PROJECT_TITLE = "select * from \"feature\" where project_id=@project_id;";
         private const string SQL_DELETE_BY_TITLE = "delete from \"feature\" where id=@id;";
+
+        // === Extended ===
+        private const string SQL_INSERT_USER_TO_FEATURE = "insert into \"feature_user\" (feature_id, username) values (@feature_id, @username);";
+        private const string SQL_DELETE_USER_FROM_FEATURE = "delete from \"feature_user\" where feature_id=@feature_id and username=@username";
+        private const string SQL_SELECT_PROJECT_BY_FEATURE = "select * from \"project\" as p join \"feature\" as f on p.id = f.project_id and f.id = @feature_id;";
 
         private string ConnectionString
         {
@@ -293,8 +299,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_INSERT_USERFEATURE = "insert into \"feature_user\" (feature_id, username) values (@feature_id, @username);";
-                cmd.CommandText = SQL_INSERT_USERFEATURE;
+                cmd.CommandText = SQL_INSERT_USER_TO_FEATURE;
                 cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = featureId;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
 
@@ -322,7 +327,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_DELETE_USER_FROM_FEATURE = "delete from \"feature_user\" where feature_id=@feature_id and username=@username";
                 cmd.CommandText = SQL_DELETE_USER_FROM_FEATURE;
                 cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = featureId;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
@@ -351,7 +355,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_PROJECT_BY_FEATURE = "select * from \"project\" as p join \"feature\" as f on p.id = f.project_id and f.id = @feature_id;";
                 cmd.CommandText = SQL_SELECT_PROJECT_BY_FEATURE;
                 cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = featureId;
 

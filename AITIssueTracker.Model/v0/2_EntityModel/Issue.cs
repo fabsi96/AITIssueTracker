@@ -7,7 +7,7 @@ using Npgsql;
 
 namespace AITIssueTracker.Model.v0._2_EntityModel
 {
-    public class Feature : IViewModel<FeatureView>
+    public class Issue : IViewModel<IssueView>
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -15,54 +15,50 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
 
         public string Description { get; set; }
 
-        public Guid ProjectId { get; set; }
+        public IssueType Type { get; set; }
 
-        public DateTime Deadline { get; set; }
-
-        public DateTime StartDate { get; set; }
+        public int EffortEstimation { get; set; }
 
         public FeatureStatus Status { get; set; }
 
-        public Feature()
+        public Issue()
         {
-            
+
         }
 
-        public Feature(FeatureForm form)
+        public Issue(IssueForm form)
         {
             Title = form.Title;
             Description = form.Description;
-            ProjectId = form.ProjectId;
-            Deadline = form.Deadline;
-            StartDate = form.StartDate;
+            Type = form.Type;
+            EffortEstimation = form.EffortEstimation;
             Status = form.Status;
-
         }
 
-        public Feature(NpgsqlDataReader reader)
+        public Issue(NpgsqlDataReader reader)
         {
             if (reader is null || reader.IsClosed)
-                throw new Exception($"Feature(NpgsqlDataReader): Error: Reader is not available.");
+                throw new Exception($"Issue(NpgsqlDataReader): Error: Cannot read datareader");
+
 
             Id = Guid.Parse(reader["id"].ToString());
             Title = reader["title"].ToString();
             Description = reader["description"].ToString();
-            ProjectId = Guid.Parse(reader["project_id"].ToString());
-            Deadline = DateTime.Parse(reader["deadline"].ToString());
-            StartDate = DateTime.Parse(reader["startdate"].ToString());
-            Status = (FeatureStatus) Enum.Parse(typeof(FeatureStatus), reader["status"].ToString());
+            Type = (IssueType)Enum.Parse(typeof(IssueType), reader["issue_type"].ToString());
+            EffortEstimation = int.Parse(reader["effort_estimation"].ToString());
+            Status = (FeatureStatus)Enum.Parse(typeof(FeatureStatus), reader["status"].ToString());
         }
 
-        public FeatureView AsView()
+        public IssueView AsView()
         {
-            return new FeatureView
+            return new IssueView
             {
                 Id = Id,
                 Title = Title,
                 Description = Description,
-                Deadline = Deadline,
-                StartDate = StartDate,
+                EffortEstimation = EffortEstimation,
                 Status = Status,
+                Type = Type
             };
         }
     }

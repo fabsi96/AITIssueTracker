@@ -132,8 +132,8 @@ namespace AITIssueTracker.API.v0._1_Controller
                 {
                     users.Add(new User(reader));
                 }
+                
                 await cmd.DisposeAsync();
-
                 await conn.CloseAsync();
                 await conn.DisposeAsync();
 

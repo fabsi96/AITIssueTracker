@@ -150,6 +150,10 @@ namespace AITIssueTracker.API.v0._1_Controller
         private const string SQL_SELECT_ALL = "select id, title, description, is_done from \"project\";";
         private const string SQL_DELETE_BY_TITLE = "delete from \"project\" where id=@id;";
 
+        private const string SQL_INSERT_USER_TO_PROJECT = "insert into \"project_user\" (project_id, username) values (@project_id, @username);";
+        private const string SQL_DELETE_USER_FROM_PROJECT = "delete from \"project_user\" where project_id=@project_id and username=@username;";
+        private const string SQL_USER_EXISTS_IN_PROJECT = "select * from \"project_user\" where username=@username and project_id=@project_id;";
+
         private string ConnectionString
         {
             get
@@ -256,7 +260,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_INSERT_USER_TO_PROJECT = "insert into \"project_user\" (project_id, username) values (@project_id, @username);";
                 cmd.CommandText = SQL_INSERT_USER_TO_PROJECT;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
@@ -284,7 +287,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_DELETE_USER_FROM_PROJECT = "delete from \"project_user\" where project_id=@project_id and username=@username;";
                 cmd.CommandText = SQL_DELETE_USER_FROM_PROJECT;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
@@ -312,7 +314,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_USER_EXISTS_IN_PROJECT = "select * from \"project_user\" where username=@username and project_id = @project_id;";
                 cmd.CommandText = SQL_USER_EXISTS_IN_PROJECT;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;

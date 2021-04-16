@@ -146,7 +146,7 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<UserIssues> GetIssuesOfUserAsync(string username)
         {
             Issues issuesOfUser = await DbContext.SelectIssuesOfUserAsync(username);
-            List<FeatureIssue> usersFeatureIssues = new List<FeatureIssue>();
+            List<Issue> usersFeatureIssues = new List<Issue>();
             issuesOfUser.ProjectFeatures.ForEach(issue =>
             {
                 usersFeatureIssues.AddRange(issue.FeatureIssues);
@@ -164,6 +164,20 @@ namespace AITIssueTracker.API.v0._1_Controller
 
     public class ViewContext
     {
+        private const string SQL_SELECT_PROJECT_ISSUES = "select * from \"issue\" as i join \"project_issue\" as pi on i.id=pi.issue_id and pi.project_id=@project_id;";
+        private const string SQL_SELECT_ALL_PROJECTS = "select * from \"project\";";
+        private const string SQL_SELECT_USERS_OF_PROJECT = "select * from \"user\" as u join \"project_user\" as pu on u.username = pu.username and pu.project_id = @project_id;";
+        private const string SQL_SELECT_PROJECT_FEATURES = "select * from \"feature\" where project_id=@project_id;";
+        private const string SQL_SELECT_FEATURE_ISSUES = "select * from \"issue\" as i join \"feature_issue\" as fi on i.id = fi.issue_id where fi.feature_id=@feature_id;";
+        private const string SQL_SELECT_USER_PROJECT_ISSUES = "select * from \"issue\" as i join \"project_issue\" as pi on i.id = pi.issue_id join \"issue_user\" as iu on i.id = iu.issue_id and iu.username=@username;";
+        private const string SQL_SELECT_USER_FEATURES = "select * from \"feature\" as f join \"feature_user\" as fu on f.id = fu.feature_id where fu.username=@username;";
+
+        private const string SQL_FEATURE_ISSUES = "select * from \"issue\" as i join \"feature_issue\" as fi on " +
+                                    "   i.id = fi.issue_id join \"issue_user\" as iu on i.id = iu.issue_id " +
+                                    " and " +
+                                    "   fi.feature_id = @feature_id " +
+                                    " and " +
+                                    "   iu.username = @username; ";
         private string ConnectionString
         {
             get
@@ -184,7 +198,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_ALL_PROJECTS = "select * from \"project\";";
                 cmd.CommandText = SQL_SELECT_ALL_PROJECTS;
 
                 await cmd.PrepareAsync();
@@ -217,14 +230,13 @@ namespace AITIssueTracker.API.v0._1_Controller
             {
                 Issues allIssues = new Issues
                 {
-                    ProjectIssues = new List<ProjectIssue>(),
+                    ProjectIssues = new List<Issue>(),
                     ProjectFeatures = new List<FeatureWithIssues>()
                 };
 
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_PROJECT_ISSUES = "select * from \"issue_project\" where project_id=@project_id;";
                 cmd.CommandText = SQL_SELECT_PROJECT_ISSUES;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
 
@@ -233,7 +245,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                 NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    allIssues.ProjectIssues.Add(new ProjectIssue(reader));
+                    allIssues.ProjectIssues.Add(new Issue(reader));
                 }
 
                 // CleanUp
@@ -241,7 +253,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await reader.DisposeAsync();
                 
                 /* === Features of Project === */
-                string SQL_SELECT_PROJECT_FEATURES = "select * from \"feature\" where project_id = @project_id;";
                 cmd.CommandText = SQL_SELECT_PROJECT_FEATURES;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
 
@@ -259,8 +270,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                 /* === Issues of each feature === */
                 foreach (FeatureWithIssues feature in allIssues.ProjectFeatures)
                 {
-                    feature.FeatureIssues = new List<FeatureIssue>();
-                    string SQL_SELECT_FEATURE_ISSUES = "select * from \"issue_feature\" where feature_id = @feature_id;";
+                    feature.FeatureIssues = new List<Issue>();
                     cmd.CommandText = SQL_SELECT_FEATURE_ISSUES;
                     cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = feature.Id;
 
@@ -268,7 +278,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                     reader = await cmd.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
                     {
-                        feature.FeatureIssues.Add(new FeatureIssue(reader));
+                        feature.FeatureIssues.Add(new Issue(reader));
                     }
 
                     // CleanUp
@@ -300,7 +310,7 @@ namespace AITIssueTracker.API.v0._1_Controller
             {
                 Issues userIssues = new Issues
                 {
-                    ProjectIssues = new List<ProjectIssue>(),
+                    ProjectIssues = new List<Issue>(),
                     ProjectFeatures = new List<FeatureWithIssues>()
                 };
 
@@ -309,16 +319,14 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlCommand cmd = conn.CreateCommand();
 
                 /* === Project issues === */
-                string SQL_SELECT_USER_PROJECT_ISSUES = "select * from \"issue_project\" as ip join \"issue_project_user\" as ipu on ip.id=ipu.issue_project_id where ipu.username=@username;";
                 cmd.CommandText = SQL_SELECT_USER_PROJECT_ISSUES;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
-
 
                 await cmd.PrepareAsync();
                 NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    userIssues.ProjectIssues.Add(new ProjectIssue(reader));
+                    userIssues.ProjectIssues.Add(new Issue(reader));
                 }
 
                 // CleanUp
@@ -326,7 +334,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await reader.DisposeAsync();
 
                 /* === Features and its issues === */
-                string SQL_SELECT_USER_FEATURES = "select * from \"feature\" as f join \"feature_user\" as fu on f.id = fu.feature_id where fu.username=@username;";
                 cmd.CommandText = SQL_SELECT_USER_FEATURES;
                 cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
 
@@ -344,13 +351,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                 /* === .. issues === */
                 foreach (FeatureWithIssues feature in userIssues.ProjectFeatures)
                 {
-                    feature.FeatureIssues = new List<FeatureIssue>();
-                    string SQL_FEATURE_ISSUES = "select * from \"issue_feature\" as issf join \"issue_feature_user\" as issfu on " +
-                                                "   issf.id = issfu.issue_feature_id " +
-                                                " and " +
-                                                "   issf.feature_id = @feature_id " +
-                                                " and " +
-                                                "   issfu.username=@username;";
+                    feature.FeatureIssues = new List<Issue>();
 
                     cmd.CommandText = SQL_FEATURE_ISSUES;
                     cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = feature.Id;
@@ -360,7 +361,7 @@ namespace AITIssueTracker.API.v0._1_Controller
                     reader = await cmd.ExecuteReaderAsync();
                     while (await reader.ReadAsync())
                     {
-                        feature.FeatureIssues.Add(new FeatureIssue(reader));
+                        feature.FeatureIssues.Add(new Issue(reader));
                     }
 
                     // CleanUp
@@ -390,7 +391,6 @@ namespace AITIssueTracker.API.v0._1_Controller
                 await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
                 await conn.OpenAsync();
                 await using NpgsqlCommand cmd = conn.CreateCommand();
-                string SQL_SELECT_USERS_OF_PROJECT = "select * from \"user\" as u join \"project_user\" as pu on u.username = pu.username and pu.project_id = @project_id;";
                 cmd.CommandText = SQL_SELECT_USERS_OF_PROJECT;
                 cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
 
@@ -421,14 +421,14 @@ namespace AITIssueTracker.API.v0._1_Controller
 
     public class Issues
     {
-        public List<ProjectIssue> ProjectIssues { get; set; }
+        public List<Issue> ProjectIssues { get; set; }
 
         public List<FeatureWithIssues> ProjectFeatures { get; set; }
     }
 
     public class FeatureWithIssues : Feature
     {
-        public List<FeatureIssue> FeatureIssues { get; set; }
+        public List<Issue> FeatureIssues { get; set; }
 
         public FeatureWithIssues() : base()
         {
@@ -443,8 +443,8 @@ namespace AITIssueTracker.API.v0._1_Controller
 
     public class UserIssues
     {
-        public List<ProjectIssue> ProjectIssues { get; set; }
+        public List<Issue> ProjectIssues { get; set; }
 
-        public List<FeatureIssue> FeatureIssues { get; set; }
+        public List<Issue> FeatureIssues { get; set; }
     }
 }
