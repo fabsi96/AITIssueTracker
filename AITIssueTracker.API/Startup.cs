@@ -14,6 +14,7 @@ using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.API.v0._3_DAL;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Converters;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace AITIssueTracker.API
@@ -30,7 +31,7 @@ namespace AITIssueTracker.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(setup => setup.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             services.InstallServicesInAssembly(Configuration);
 
@@ -45,6 +46,7 @@ namespace AITIssueTracker.API
                 Password = dbSection["password"],
                 Username = dbSection["user"]
             };
+
             services.AddSingleton(dbSettings);
             services.AddTransient<TestManager>();
             services.AddTransient<TestContext>();

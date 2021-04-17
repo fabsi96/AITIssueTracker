@@ -9,13 +9,14 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
 {
     public class Feature : IViewModel<FeatureView>
     {
+        // TODO: Save own generated guid to return the correct id or ?
         public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Title { get; set; }
 
         public string Description { get; set; }
 
-        public Guid ProjectId { get; set; }
+        // public Guid ProjectId { get; set; }
 
         public DateTime Deadline { get; set; }
 
@@ -32,7 +33,6 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
         {
             Title = form.Title;
             Description = form.Description;
-            ProjectId = form.ProjectId;
             Deadline = form.Deadline;
             StartDate = form.StartDate;
             Status = form.Status;
@@ -47,10 +47,11 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
             Id = Guid.Parse(reader["id"].ToString());
             Title = reader["title"].ToString();
             Description = reader["description"].ToString();
-            ProjectId = Guid.Parse(reader["project_id"].ToString());
+            // ProjectId = Guid.Parse(reader["project_id"].ToString());
             Deadline = DateTime.Parse(reader["deadline"].ToString());
             StartDate = DateTime.Parse(reader["startdate"].ToString());
-            Status = (FeatureStatus) Enum.Parse(typeof(FeatureStatus), reader["status"].ToString());
+            string status = reader["status"].ToString();
+            Status = (FeatureStatus) Enum.Parse(typeof(FeatureStatus), status);
         }
 
         public FeatureView AsView()

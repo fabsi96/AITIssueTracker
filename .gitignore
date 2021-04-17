@@ -262,3 +262,7 @@ AITIssueTracker.Test/obj/Debug/netcoreapp3.1/AITIssueTracker.Test.pdb
 AITIssueTracker.sln
 Planung/database.pdf
 AITIssueTracker.sln.DotSettings.user
+AITIssueTracker.Test/bin/Debug/netcoreapp3.1/FluentValidation.dll
+AITIssueTracker.Sync/bin/Debug/netcoreapp3.1/FluentValidation.dll
+
+AITIssueTracker.API/bin/Debug/net5.0/FluentValidation.dll

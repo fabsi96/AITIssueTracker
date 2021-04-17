@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AITIssueTracker.API.v0._3_DAL;
+using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.Model.v0;
 using AITIssueTracker.Model.v0._2_EntityModel;
 using AITIssueTracker.Model.v0._3_ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql;
-using NpgsqlTypes;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace AITIssueTracker.API.v0._1_Controller
 {
     [ApiController]
-    [Route(Endpoints.BASE_VIEW)]
     [ApiVersion("0.0")]
+    [Route(Endpoints.BASE_VIEW)]
+    [SwaggerTag("Use-Cases")]
     public class ViewController : ControllerBase
     {
         private ViewManager Manager { get; }
@@ -50,14 +50,14 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<IActionResult> GetAllIssuesOfProjectAsync(
             [FromRoute] Guid projectId)
         {
-            Issues allIssues = await Manager.GetAllFeaturesAndIssuesOfProjectAsync(projectId);
+            IssuesView allIssuesView = await Manager.GetAllFeaturesAndIssuesOfProjectAsync(projectId);
 
-            if (allIssues is null)
+            if (allIssuesView is null)
             {
                 return BadRequest();
             }
 
-            return Ok(allIssues);
+            return Ok(allIssuesView);
         }
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<IActionResult> GetFeaturesAndIssuesOfUserAsync(
             [FromRoute] string username)
         {
-            Issues userIssues = await Manager.GetAllFeaturesAndIssuesOfUserAsync(username);
+            IssuesView userIssuesView = await Manager.GetAllFeaturesAndIssuesOfUserAsync(username);
 
-            if (userIssues is null)
+            if (userIssuesView is null)
                 return BadRequest();
 
-            return Ok(userIssues);
+            return Ok(userIssuesView);
         }
 
         /// <summary>
@@ -103,348 +103,12 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<IActionResult> GetAllIssuesOfUserAsync(
             [FromRoute] string username)
         {
-            UserIssues allIssuesOfUser = await Manager.GetIssuesOfUserAsync(username);
+            UserIssuesView allIssuesViewOfUser = await Manager.GetIssuesOfUserAsync(username);
 
-            if (allIssuesOfUser is null)
+            if (allIssuesViewOfUser is null)
                 return BadRequest();
 
-            return Ok(allIssuesOfUser);
+            return Ok(allIssuesViewOfUser);
         }
-    }
-
-    public class ViewManager
-    {
-        private ViewContext DbContext { get; }
-
-        public ViewManager(ViewContext ctx)
-        {
-            DbContext = ctx;
-        }
-
-        public async Task<List<ProjectView>> GetAllProjectsAsync()
-        {
-            List<Project> allProjects = await DbContext.SelectAllProjectsAsync();
-            return allProjects?.ConvertAll(c => c.AsView());
-        }
-
-        public async Task<Issues> GetAllFeaturesAndIssuesOfProjectAsync(Guid projectId)
-        {
-            return await DbContext.SelectIssuesOfProjectAsync(projectId);
-        }
-
-        public async Task<Issues> GetAllFeaturesAndIssuesOfUserAsync(string username)
-        {
-            return await DbContext.SelectIssuesOfUserAsync(username);
-        }
-
-        public async Task<List<UserView>> GetUsersOfProjectAsync(Guid projectId)
-        {
-            List<User> allUsers = await DbContext.SelectUsersOfProjectAsync(projectId);
-            return allUsers?.ConvertAll(c => c.AsView());
-        }
-
-        public async Task<UserIssues> GetIssuesOfUserAsync(string username)
-        {
-            Issues issuesOfUser = await DbContext.SelectIssuesOfUserAsync(username);
-            List<Issue> usersFeatureIssues = new List<Issue>();
-            issuesOfUser.ProjectFeatures.ForEach(issue =>
-            {
-                usersFeatureIssues.AddRange(issue.FeatureIssues);
-            });
-
-            UserIssues userIssues = new UserIssues
-            {
-                ProjectIssues = issuesOfUser.ProjectIssues,
-                FeatureIssues = usersFeatureIssues,
-            };
-
-            return userIssues;
-        }
-    }
-
-    public class ViewContext
-    {
-        private const string SQL_SELECT_PROJECT_ISSUES = "select * from \"issue\" as i join \"project_issue\" as pi on i.id=pi.issue_id and pi.project_id=@project_id;";
-        private const string SQL_SELECT_ALL_PROJECTS = "select * from \"project\";";
-        private const string SQL_SELECT_USERS_OF_PROJECT = "select * from \"user\" as u join \"project_user\" as pu on u.username = pu.username and pu.project_id = @project_id;";
-        private const string SQL_SELECT_PROJECT_FEATURES = "select * from \"feature\" where project_id=@project_id;";
-        private const string SQL_SELECT_FEATURE_ISSUES = "select * from \"issue\" as i join \"feature_issue\" as fi on i.id = fi.issue_id where fi.feature_id=@feature_id;";
-        private const string SQL_SELECT_USER_PROJECT_ISSUES = "select * from \"issue\" as i join \"project_issue\" as pi on i.id = pi.issue_id join \"issue_user\" as iu on i.id = iu.issue_id and iu.username=@username;";
-        private const string SQL_SELECT_USER_FEATURES = "select * from \"feature\" as f join \"feature_user\" as fu on f.id = fu.feature_id where fu.username=@username;";
-
-        private const string SQL_FEATURE_ISSUES = "select * from \"issue\" as i join \"feature_issue\" as fi on " +
-                                    "   i.id = fi.issue_id join \"issue_user\" as iu on i.id = iu.issue_id " +
-                                    " and " +
-                                    "   fi.feature_id = @feature_id " +
-                                    " and " +
-                                    "   iu.username = @username; ";
-        private string ConnectionString
-        {
-            get
-            {
-                return $"Server={Settings.DatabaseIp};Port={Settings.DatabasePort};User Id={Settings.Username};Password={Settings.Password};Database={Settings.Database};Pooling=false;";
-            }
-        }
-        private PsqlSettings Settings { get; }
-        public ViewContext(PsqlSettings settings)
-        {
-            Settings = settings;
-        }
-
-        public async Task<List<Project>> SelectAllProjectsAsync()
-        {
-            try
-            {
-                await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-                await conn.OpenAsync();
-                await using NpgsqlCommand cmd = conn.CreateCommand();
-                cmd.CommandText = SQL_SELECT_ALL_PROJECTS;
-
-                await cmd.PrepareAsync();
-                NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                List<Project> projects = new List<Project>();
-                while (await reader.ReadAsync())
-                {
-                    projects.Add(new Project(reader));
-                }
-
-                // CleanUp
-                await reader.DisposeAsync();
-                await cmd.DisposeAsync();
-                await conn.CloseAsync();
-                await conn.DisposeAsync();
-
-                return projects;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"SelectAllProjectsAsync: Error: {e.Message}");
-                return null;
-            }
-        }
-
-        public async Task<Issues> SelectIssuesOfProjectAsync(Guid projectId)
-        {
-            try
-            {
-                Issues allIssues = new Issues
-                {
-                    ProjectIssues = new List<Issue>(),
-                    ProjectFeatures = new List<FeatureWithIssues>()
-                };
-
-                await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-                await conn.OpenAsync();
-                await using NpgsqlCommand cmd = conn.CreateCommand();
-                cmd.CommandText = SQL_SELECT_PROJECT_ISSUES;
-                cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
-
-                /* === Issues of project === */
-                await cmd.PrepareAsync();
-                NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    allIssues.ProjectIssues.Add(new Issue(reader));
-                }
-
-                // CleanUp
-                cmd.Parameters.Clear();
-                await reader.DisposeAsync();
-                
-                /* === Features of Project === */
-                cmd.CommandText = SQL_SELECT_PROJECT_FEATURES;
-                cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
-
-                await cmd.PrepareAsync();
-                reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    allIssues.ProjectFeatures.Add(new FeatureWithIssues(reader));
-                }
-
-                // CleanUp
-                cmd.Parameters.Clear();
-                await reader.DisposeAsync();
-
-                /* === Issues of each feature === */
-                foreach (FeatureWithIssues feature in allIssues.ProjectFeatures)
-                {
-                    feature.FeatureIssues = new List<Issue>();
-                    cmd.CommandText = SQL_SELECT_FEATURE_ISSUES;
-                    cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = feature.Id;
-
-                    await cmd.PrepareAsync();
-                    reader = await cmd.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
-                    {
-                        feature.FeatureIssues.Add(new Issue(reader));
-                    }
-
-                    // CleanUp
-                    cmd.Parameters.Clear();
-                    await reader.DisposeAsync();
-                }
-
-
-
-                // CleanUp
-                await reader.DisposeAsync();
-                await cmd.DisposeAsync();
-                await conn.CloseAsync();
-                await conn.DisposeAsync();
-
-                return allIssues;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"SelectIssuesOfProjectAsync: Error: {e.Message}");
-                return null;
-            }
-        }
-
-        public async Task<Issues> SelectIssuesOfUserAsync(string username)
-        {
-
-            try
-            {
-                Issues userIssues = new Issues
-                {
-                    ProjectIssues = new List<Issue>(),
-                    ProjectFeatures = new List<FeatureWithIssues>()
-                };
-
-                await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-                await conn.OpenAsync();
-                await using NpgsqlCommand cmd = conn.CreateCommand();
-
-                /* === Project issues === */
-                cmd.CommandText = SQL_SELECT_USER_PROJECT_ISSUES;
-                cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
-
-                await cmd.PrepareAsync();
-                NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    userIssues.ProjectIssues.Add(new Issue(reader));
-                }
-
-                // CleanUp
-                cmd.Parameters.Clear();
-                await reader.DisposeAsync();
-
-                /* === Features and its issues === */
-                cmd.CommandText = SQL_SELECT_USER_FEATURES;
-                cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
-
-                await cmd.PrepareAsync();
-                reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    userIssues.ProjectFeatures.Add(new FeatureWithIssues(reader));
-                }
-
-                // CleanUp
-                cmd.Parameters.Clear();
-                await reader.DisposeAsync();
-
-                /* === .. issues === */
-                foreach (FeatureWithIssues feature in userIssues.ProjectFeatures)
-                {
-                    feature.FeatureIssues = new List<Issue>();
-
-                    cmd.CommandText = SQL_FEATURE_ISSUES;
-                    cmd.Parameters.Add("@feature_id", NpgsqlDbType.Uuid).Value = feature.Id;
-                    cmd.Parameters.Add("@username", NpgsqlDbType.Text).Value = username;
-
-                    await cmd.PrepareAsync();
-                    reader = await cmd.ExecuteReaderAsync();
-                    while (await reader.ReadAsync())
-                    {
-                        feature.FeatureIssues.Add(new Issue(reader));
-                    }
-
-                    // CleanUp
-                    cmd.Parameters.Clear();
-                    await reader.DisposeAsync();
-                }
-
-                // CleanUp
-                await reader.DisposeAsync();
-                await cmd.DisposeAsync();
-                await conn.CloseAsync();
-                await conn.DisposeAsync();
-
-                return userIssues;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"SelectIssuesOfUserAsync: Error: {e.Message}");
-                return null;
-            }
-        }
-
-        public async Task<List<User>> SelectUsersOfProjectAsync(Guid projectId)
-        {
-            try
-            {
-                await using NpgsqlConnection conn = new NpgsqlConnection(ConnectionString);
-                await conn.OpenAsync();
-                await using NpgsqlCommand cmd = conn.CreateCommand();
-                cmd.CommandText = SQL_SELECT_USERS_OF_PROJECT;
-                cmd.Parameters.Add("@project_id", NpgsqlDbType.Uuid).Value = projectId;
-
-                await cmd.PrepareAsync();
-                List<User> users = new List<User>();
-                NpgsqlDataReader reader = await cmd.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
-                {
-                    users.Add(new User(reader));
-                }
-
-                // CleanUp
-                await reader.DisposeAsync();
-                await cmd.DisposeAsync();
-                await conn.CloseAsync();
-                await conn.DisposeAsync();
-
-                return users;
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"SelectUsersOfProjectAsync: Error: {e.Message}");
-                return null;
-            }
-        }
-    }
-
-    public class Issues
-    {
-        public List<Issue> ProjectIssues { get; set; }
-
-        public List<FeatureWithIssues> ProjectFeatures { get; set; }
-    }
-
-    public class FeatureWithIssues : Feature
-    {
-        public List<Issue> FeatureIssues { get; set; }
-
-        public FeatureWithIssues() : base()
-        {
-            
-        }
-        
-        public FeatureWithIssues(NpgsqlDataReader reader) : base(reader)
-        {
-            
-        }
-    }
-
-    public class UserIssues
-    {
-        public List<Issue> ProjectIssues { get; set; }
-
-        public List<Issue> FeatureIssues { get; set; }
     }
 }
