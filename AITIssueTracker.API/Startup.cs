@@ -65,6 +65,8 @@ namespace AITIssueTracker.API
 
             services.AddTransient<ViewManager>();
             services.AddTransient<ViewContext>();
+
+            services.AddTransient<GithubContext>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)

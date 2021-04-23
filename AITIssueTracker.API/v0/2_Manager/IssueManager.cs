@@ -98,24 +98,9 @@ namespace AITIssueTracker.API.v0._2_Manager
 
         /* === Extended user functions ==== */
 
-        public async Task<bool> AddUserToProjectIssueAsync(Guid issueId, string username)
+        public async Task<bool> AddUserToIssueAsync(Guid issueId, string username)
         {
             Project project = await DbContext.SelectProjectOfIssueAsync(IssueContext.PROJECT_ISSUE, issueId, username);
-
-            if (project is null)
-                return false;
-
-            bool userExists = await ProjectDb.SelectUserIsInProjectAsync(username, project.Id);
-
-            if (!userExists)
-                return false;
-
-            return await DbContext.InsertUserToIssueAsync(issueId, username) == 1;
-        }
-
-        public async Task<bool> AddUserToFeatureIssueAsync(Guid issueId, string username)
-        {
-            Project project = await DbContext.SelectProjectOfIssueAsync(IssueContext.FEATURE_ISSUE, issueId, username);
 
             if (project is null)
                 return false;

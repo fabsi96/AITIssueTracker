@@ -198,33 +198,14 @@ namespace AITIssueTracker.API.v0._1_Controller
         /// <summary>
         /// Assing a user to an issue of a project.
         /// </summary>
-        /// <param name="userToProjectIssueForm"></param>
+        /// <param name="userToIssueForm"></param>
         /// 
         [HttpPost]
-        [Route("project/user")]
+        [Route("user")]
         public async Task<IActionResult> PostUserToProjectIssueAsync(
-            [FromBody] UserProjectIssueForm userToProjectIssueForm)
+            [FromBody] UserIssueForm userToIssueForm)
         {
-            if (!await Manager.AddUserToProjectIssueAsync(userToProjectIssueForm.IssueId, userToProjectIssueForm.Username))
-            {
-                return BadRequest();
-            }
-
-            return Ok();
-        }
-
-        /// <summary>
-        /// Assign a user to an issue of a feature of a project.
-        /// </summary>
-        /// <param name="userToFeatureIssueForm"></param>
-        /// 
-        [HttpPost]
-        [Route("feature/user")]
-        public async Task<IActionResult> PostUserToFeatureIssueAsync(
-            [FromBody] UserFeatureIssueForm userToFeatureIssueForm)
-        {
-
-            if (!await Manager.AddUserToFeatureIssueAsync(userToFeatureIssueForm.IssueId, userToFeatureIssueForm.Username))
+            if (!await Manager.AddUserToIssueAsync(userToIssueForm.IssueId, userToIssueForm.Username))
             {
                 return BadRequest();
             }

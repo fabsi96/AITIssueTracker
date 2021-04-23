@@ -30,6 +30,7 @@ namespace AITIssueTracker.API.v0._3_DAL
             try
             {
                 conn = new NpgsqlConnection(ConnectionString);
+
                 await conn.OpenAsync();
                 cmd = conn.CreateCommand();
                 result = await func(cmd);
