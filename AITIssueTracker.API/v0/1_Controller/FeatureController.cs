@@ -33,7 +33,7 @@ namespace AITIssueTracker.API.v0._1_Controller
         ///
         /// 
         [HttpGet]
-        [Route("{projectId}")]
+        [Route("{projectId:guid}")]
         public async Task<IActionResult> GetAllFeaturesOfProject(
             [FromRoute] Guid projectId)
         {
