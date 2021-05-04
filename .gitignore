@@ -94,3 +94,11 @@ AITIssueTracker.API/obj/Release/net5.0/AITIssueTracker.AssemblyInfoInputs.cache
 AITIssueTracker.API/obj/Release/net5.0/AITIssueTracker.GeneratedMSBuildEditorConfig.editorconfig
 AITIssueTracker.API/AITIssueTracker.API.csproj
 AITIssueTracker.API/AITIssueTracker.API.csproj.user
+
+.idea/
+
+AITIssueTracker.API/obj/
+
+*.user
+
+AITIssueTracker.Model/obj/

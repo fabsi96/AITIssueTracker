@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AITIssueTracker.API.v0._3_DAL;
 using AITIssueTracker.Model.v0;
@@ -20,23 +22,23 @@ namespace AITIssueTracker.API.v0._1_Controller
     [SwaggerTag("Manage projects and its developers")]
     public class ProjectController : ControllerBase
     {
-        private ProjectManager Manager { get; }
-
-        public ProjectController(ProjectManager manager)
+        private IProjectService Service { get; }
+        
+        public ProjectController(IProjectService service)
         {
-            Manager = manager;
+            Service = service;
         }
 
         /// <summary>
         /// Get all existing projects.
         /// </summary>
         /// <param name="filter"></param>
+        /// 
         [HttpGet]
         public async Task<IActionResult> GetAllProjectsAsync(
             [FromQuery] string filter)
         {
-            List<ProjectView> allProjects = await Manager.GetProjectsAsync(filter);
-
+            List<ProjectView> allProjects = await Service.GetAllProjectsAsync();
             return allProjects is null ? BadRequest() : Ok(allProjects);
         }
 
@@ -44,28 +46,32 @@ namespace AITIssueTracker.API.v0._1_Controller
         /// Creates a new project.
         /// </summary>
         /// <param name="newProject"></param>
+        /// 
         [HttpPost]
         public async Task<IActionResult> PostNewProjectAsync(
             [FromBody] ProjectForm newProject)
         {
-            ProjectView savedProject = await Manager.SaveProjectAsync(newProject);
-
-            return savedProject is null ? BadRequest() : Ok(savedProject);
+            if (Service.ProjectExists(newProject.Title))
+            {
+                return BadRequest("Already exists");
+            }
+            ProjectView savedProject = await Service.SaveProjectAsync(newProject);
+            return savedProject is null ? BadRequest("Could not be saved") : Ok(savedProject);
         }
 
         /// <summary>
         /// Delete an existing project.
         /// </summary>
         /// <param name="projectId"></param>
-        /// <returns></returns>
+        /// 
         [HttpDelete]
-        [Route("{projectId}")]
+        [Route("{projectId:guid}")]
         public async Task<IActionResult> DeleteProjectAsync(
             [FromRoute] Guid projectId)
         {
-            bool isDeleted = await Manager.DeleteProjectAsync(projectId);
+            bool isDeleted = await Service.DeleteProjectAsync(projectId);
 
-            return !isDeleted ? BadRequest() : Ok();
+            return !isDeleted ? BadRequest("Could not be saved") : Ok("Successfully saved or is already removed");
         }
 
         /* === Extended User interactions === */
@@ -74,15 +80,14 @@ namespace AITIssueTracker.API.v0._1_Controller
         /// Adds a user (developer) to a project.
         /// </summary>
         /// <param name="userToProjectForm"></param>
+        /// 
         [HttpPost]
         [Route("user")]
         public async Task<IActionResult> PostUserToProjectAsync(
             [FromBody] ProjectUserForm userToProjectForm)
         {
-            if (!await Manager.AddUserToProjectAsync(userToProjectForm.Username, userToProjectForm.ProjectId))
-            {
+            if (!await Service.AddUserToProjectAsync(userToProjectForm.Username, userToProjectForm.ProjectId))
                 return BadRequest();
-            }
 
             return Ok();
         }
@@ -92,13 +97,14 @@ namespace AITIssueTracker.API.v0._1_Controller
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="username"></param>
+        /// 
         [HttpDelete]
-        [Route("user/{projectId}/{username}")]
+        [Route("user/{projectId:guid}/{username}")]
         public async Task<IActionResult> DeleteUserFromProjectAsync(
             [FromRoute] Guid projectId,
             [FromRoute] string username)
         {
-            if (!await Manager.RemoveUserFromProjectAsync(username, projectId))
+            if (!await Service.RemoveUserFromProjectAsync(username, projectId))
             {
                 return BadRequest();
             }
@@ -107,7 +113,22 @@ namespace AITIssueTracker.API.v0._1_Controller
         }
     }
 
-    public class ProjectManager
+    public interface IProjectService
+    {
+        Task<ProjectView> SaveProjectAsync(ProjectForm newProject);
+
+        Task<List<ProjectView>> GetAllProjectsAsync();
+
+        Task<bool> DeleteProjectAsync(Guid projectId);
+
+        bool ProjectExists(string projectTitle);
+        
+        Task<bool> AddUserToProjectAsync(string username, Guid projectId);
+        
+        Task<bool> RemoveUserFromProjectAsync(string username, Guid projectId);
+    }
+
+    public class ProjectManager : IProjectService
     {
         private ProjectContext DbContext { get; }
 
@@ -122,7 +143,7 @@ namespace AITIssueTracker.API.v0._1_Controller
             return await DbContext.InsertNewAsync(newProject) == 1 ? newProject.AsView() : null;
         }
 
-        public async Task<List<ProjectView>> GetProjectsAsync(string filter="")
+        public async Task<List<ProjectView>> GetAllProjectsAsync()
         {
             List<Project> allProjects = await DbContext.SelectAllAsync();
             return allProjects?.ConvertAll(c => c.AsView());
@@ -131,6 +152,11 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<bool> DeleteProjectAsync(Guid projectId)
         {
             return await DbContext.DeleteByTitleAsync(projectId);
+        }
+
+        public bool ProjectExists(string projectTitle)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> AddUserToProjectAsync(string username, Guid projectId)

@@ -12,6 +12,7 @@ using AITIssueTracker.API.Installer;
 using AITIssueTracker.API.v0._1_Controller;
 using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.API.v0._3_DAL;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -30,7 +31,8 @@ namespace AITIssueTracker.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson()
+                .AddFluentValidation();
 
             services.InstallServicesInAssembly(Configuration);
 
@@ -49,7 +51,7 @@ namespace AITIssueTracker.API
             services.AddTransient<TestManager>();
             services.AddTransient<TestContext>();
 
-            services.AddTransient<ProjectManager>();
+            services.AddTransient<IProjectService, ProjectManager>();
             services.AddTransient<ProjectContext>();
 
             services.AddTransient<UserManager>();
