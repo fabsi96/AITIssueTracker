@@ -4,14 +4,11 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using AITIssueTracker.API.v0._3_DAL;
+using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.Model.v0;
 using AITIssueTracker.Model.v0._3_ViewModel;
 using AITIssueTracker.Model.v0._1_FormModel;
-using AITIssueTracker.Model.v0._2_EntityModel;
 using Microsoft.AspNetCore.Mvc;
-using Npgsql;
-using NpgsqlTypes;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace AITIssueTracker.API.v0._1_Controller

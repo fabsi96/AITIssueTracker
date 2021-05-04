@@ -4,7 +4,7 @@ using System.Text;
 
 namespace AITIssueTracker.Model.v0._1_FormModel
 {
-    public class UserFeatureIssueForm
+    public class UserIssueForm
     {
         public Guid IssueId { get; set; }
 

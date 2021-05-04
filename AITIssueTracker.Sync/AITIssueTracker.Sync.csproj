@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+    <PackageReference Include="Octokit" Version="0.50.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AITIssueTracker.Model\AITIssueTracker.Model.csproj" />
+  </ItemGroup>
+
+</Project>

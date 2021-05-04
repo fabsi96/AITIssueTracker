@@ -1,0 +1,13 @@
+
+user (username#)
+
+project (id#, title, description, is_done)
+project_user (project_id#, username#)
+
+feature (id#, project_id, title, description, startdate, deadline, status)
+feature_user (feature_id#, username#)
+
+issue (id#, title, description, effort_estimation, issue_type, status)
+project_issue (issue_id#, project_id)
+feature_issue (issue_id#, feature_id)
+issue_user (issue_id#, username#)

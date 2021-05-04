@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 using AITIssueTracker.Model.v0._1_FormModel;
 using AITIssueTracker.Model.v0._3_ViewModel;
@@ -8,11 +7,9 @@ using Npgsql;
 
 namespace AITIssueTracker.Model.v0._2_EntityModel
 {
-    public class ProjectIssue : IViewModel<IssueView>
+    public class Issue : IViewModel<IssueView>
     {
-        public Guid Id { get; set; }
-
-        public Guid ProjectId { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Title { get; set; }
 
@@ -24,14 +21,13 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
 
         public FeatureStatus Status { get; set; }
 
-        public ProjectIssue()
+        public Issue()
         {
 
         }
 
-        public ProjectIssue(ProjectIssueForm form)
+        public Issue(IssueForm form)
         {
-            ProjectId = form.ProjectId;
             Title = form.Title;
             Description = form.Description;
             Type = form.Type;
@@ -39,14 +35,13 @@ namespace AITIssueTracker.Model.v0._2_EntityModel
             Status = form.Status;
         }
 
-        public ProjectIssue(NpgsqlDataReader reader)
+        public Issue(NpgsqlDataReader reader)
         {
             if (reader is null || reader.IsClosed)
-                throw new Exception($"FeatureIssue(NpgsqlDataReader): Error: Cannot read datareader");
+                throw new Exception($"Issue(NpgsqlDataReader): Error: Cannot read datareader");
 
 
             Id = Guid.Parse(reader["id"].ToString());
-            ProjectId = Guid.Parse(reader["project_id"].ToString());
             Title = reader["title"].ToString();
             Description = reader["description"].ToString();
             Type = (IssueType)Enum.Parse(typeof(IssueType), reader["issue_type"].ToString());
