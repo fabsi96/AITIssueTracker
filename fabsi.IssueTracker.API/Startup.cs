@@ -4,8 +4,11 @@ using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.API.v0._2_Manager.Contracts;
 using AITIssueTracker.API.v0._3_DAL;
 using FluentValidation.AspNetCore;
+<<<<<<< HEAD:fabsi.IssueTracker.API/Startup.cs
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+=======
+>>>>>>> master:AITIssueTracker.API/Startup.cs
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,6 +28,7 @@ namespace AITIssueTracker.API
         }
 
         public void ConfigureServices(IServiceCollection services)
+<<<<<<< HEAD:fabsi.IssueTracker.API/Startup.cs
         {   
             // Enable comptroller's
             services.AddControllers(options =>
@@ -32,6 +36,11 @@ namespace AITIssueTracker.API
                     // options.Filters.Add<SomeFilterName>()
                 })
                 .AddFluentValidation()
+=======
+        {
+            services.AddControllers()
+                .AddFluentValidation();
+>>>>>>> master:AITIssueTracker.API/Startup.cs
                 .AddNewtonsoftJson(setup => setup.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             services.InstallServicesInAssembly(Configuration);
@@ -52,11 +61,19 @@ namespace AITIssueTracker.API
             
             services.AddSingleton(dbSettings);
 
+<<<<<<< HEAD:fabsi.IssueTracker.API/Startup.cs
             services.AddTransient<IUserService, UserService>();
             
             // services.AddScoped<IProjectService, ProjectService>();
             services.AddTransient<ProjectManager>();
             services.AddSingleton<ProjectContext>();
+=======
+            services.AddTransient<IProjectService, ProjectManager>();
+            services.AddTransient<ProjectContext>();
+
+            services.AddTransient<UserManager>();
+            services.AddTransient<UserContext>();
+>>>>>>> master:AITIssueTracker.API/Startup.cs
 
             // services.AddTransient<IFeatureService, FeatureService>();
             services.AddTransient<FeatureManager>();

@@ -94,6 +94,7 @@ AITIssueTracker.API/obj/Release/net5.0/AITIssueTracker.AssemblyInfoInputs.cache
 AITIssueTracker.API/obj/Release/net5.0/AITIssueTracker.GeneratedMSBuildEditorConfig.editorconfig
 AITIssueTracker.API/AITIssueTracker.API.csproj
 AITIssueTracker.API/AITIssueTracker.API.csproj.user
+<<<<<<< HEAD
 .vs/AITIssueTracker/v16/TestStore/0/000.testlog
 .vs/AITIssueTracker/v16/TestStore/0/testlog.manifest
 AITIssueTracker.Sync/obj/AITIssueTracker.Sync.csproj.nuget.dgspec.json
@@ -296,3 +297,5 @@ AITIssueTracker.API/obj/rider.project.restore.info
 **/.idea/**
 **/bin/**
 **/.vs/**
+=======
+>>>>>>> master
