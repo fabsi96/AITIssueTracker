@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AITIssueTracker.API</name>
+    </assembly>
+    <members>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.FeatureController.GetAllFeaturesOfProject(System.Guid)">
+             <summary>
+             Returns all features from a given project.
+             </summary>
+             <param name="projectId"></param>
+            
+             
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.FeatureController.PostNewFeatureAsync(System.Guid,AITIssueTracker.Model.v0._1_FormModel.FeatureForm)">
+            <summary>
+            Create a new feature and assign it to a project.
+            </summary>
+            <param name="projectId"></param>
+            <param name="newFeature"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.FeatureController.PutFeatureStatusAsync(System.String,System.Guid,AITIssueTracker.Model.v0._2_EntityModel.FeatureStatus)">
+            <summary>
+            Edits a features data.
+            </summary>
+            <param name="username"></param>
+            <param name="featureId"></param>
+            <param name="newStatus"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.FeatureController.DeleteFeatureFromProjectAsync(System.Guid)">
+            <summary>
+            Removes a feature from a project.
+            </summary>
+            <param name="featureId"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.FeatureController.PostUserToFeatureAsync(AITIssueTracker.Model.v0._1_FormModel.FeatureUserForm)">
+            <summary>
+            Adds a user to a feature.
+            </summary>
+            <param name="userToFeatureForm"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.FeatureController.DeleteUserFromFeatureAsync(System.Guid,System.String)">
+            <summary>
+            Remove a user from a feature.
+            </summary>
+            <param name="featureId"></param>
+            <param name="username"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.GetIssuesOfProjectAsync(System.Guid)">
+            <summary>
+            Returns all issues of a project assigned to the project
+            </summary>
+            <param name="projectId"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.PostNewIssueToProjectAsync(System.Guid,AITIssueTracker.Model.v0._1_FormModel.IssueForm)">
+            <summary>
+            Assign a new issue to a project.
+            </summary>
+            <param name="projectId"></param>
+            <param name="newIssue"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.PutIssueTypeUpdateAsync(System.String,System.Guid,AITIssueTracker.Model.v0._2_EntityModel.IssueType)">
+            <summary>
+            Update the type of an issue.
+            </summary>
+            <param name="username"></param>
+            <param name="issueId"></param>
+            <param name="issueType"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.PutIssueStatusUpdateAsync(System.String,System.Guid,AITIssueTracker.Model.v0._2_EntityModel.FeatureStatus)">
+            <summary>
+            Update the status of an issue.
+            </summary>
+            <param name="username"></param>
+            <param name="issueId"></param>
+            <param name="issueStatus"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.DeleteIssueFromProjectAsync(System.Guid)">
+            <summary>
+            Delete an issue from a project.
+            </summary>
+            <param name="issueId"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.GetIssuesOfFeatureAsync(System.Guid)">
+            <summary>
+            Returns all issues assign to the given feature.
+            </summary>
+            <param name="featureId"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.PostNewIssueToFeatureAsync(System.Guid,AITIssueTracker.Model.v0._1_FormModel.IssueForm)">
+            <summary>
+            Assign a new issue to a feature of a project.
+            </summary>
+            <param name="featureId"></param>
+            <param name="newIssue"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.DeleteIssueFromFeatureAsync(System.Guid)">
+            <summary>
+            Removes an issue from a feature.
+            </summary>
+            <param name="issueId"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.PostUserToProjectIssueAsync(AITIssueTracker.Model.v0._1_FormModel.UserIssueForm)">
+            <summary>
+            Assing a user to an issue of a project.
+            </summary>
+            <param name="userToIssueForm"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.DeleteUserFromProjectIssueAsync(System.Guid,System.String)">
+            <summary>
+            Removes a user from a project issue.
+            </summary>
+            <param name="issueId"></param>
+            <param name="username"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.IssueController.DeleteUserFromFeatureIssueAsync(System.Guid,System.String)">
+            <summary>
+            Removes the user from a feature.
+            </summary>
+            <param name="issueId"></param>
+            <param name="username"></param>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ProjectController.GetAllProjectsAsync(System.String)">
+            <summary>
+            Get all existing projects.
+            </summary>
+            <param name="filter"></param>
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ProjectController.PostNewProjectAsync(AITIssueTracker.Model.v0._1_FormModel.ProjectForm)">
+            <summary>
+            Creates a new project.
+            </summary>
+            <param name="newProject"></param>
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ProjectController.DeleteProjectAsync(System.Guid)">
+            <summary>
+            Delete an existing project.
+            </summary>
+            <param name="projectId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ProjectController.PostUserToProjectAsync(AITIssueTracker.Model.v0._1_FormModel.ProjectUserForm)">
+            <summary>
+            Adds a user (developer) to a project.
+            </summary>
+            <param name="userToProjectForm"></param>
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ProjectController.DeleteUserFromProjectAsync(System.Guid,System.String)">
+            <summary>
+            Removes a user (developer) from a project.
+            </summary>
+            <param name="projectId"></param>
+            <param name="username"></param>
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.TestController.GetAllAsync(System.String)">
+             <summary>
+             Get all test objects
+             </summary>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.TestController.PostNewItemAsync(AITIssueTracker.Model.v0._1_FormModel.TestForm)">
+             <summary>
+             Create a new test object
+             </summary>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.TestController.DeleteItemAsync(System.String)">
+             <summary>
+             Delete a test object with the target identifier
+             </summary>
+            
+             
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ViewController.GetAllProjectsAsync">
+            <summary>
+            Anwendungsfall 1
+            </summary>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ViewController.GetAllIssuesOfProjectAsync(System.Guid)">
+            <summary>
+            Anwendungsfall 2
+            </summary>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ViewController.GetFeaturesAndIssuesOfUserAsync(System.String)">
+            <summary>
+            Anwendungsfall 3
+            </summary>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ViewController.GetUsersOfProjectAsync(System.Guid)">
+            <summary>
+            Anwendungsfall 4
+            </summary>
+            
+        </member>
+        <member name="M:AITIssueTracker.API.v0._1_Controller.ViewController.GetAllIssuesOfUserAsync(System.String)">
+            <summary>
+            Anwendungsfall 5
+            </summary>
+            
+        </member>
+    </members>
+</doc>

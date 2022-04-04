@@ -1,0 +1,24 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=487193b2_002D23a2_002D489a_002D9812_002D5c0559d05041/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SaveNewUserAsync #2" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::D633F42C-8E04-4272-9DF5-BDD3F1AA29F0::.NETCoreApp,Version=v3.1::AITIssueTracker.Test.v0.UserTest.SaveNewUserAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5013dee2_002D5f2c_002D42e2_002D99f0_002D2129329dd376/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SaveNewUserAsync #4" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::D633F42C-8E04-4272-9DF5-BDD3F1AA29F0::.NETCoreApp,Version=v3.1::AITIssueTracker.Test.v0.UserTest.SaveNewUserAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=9490c1dd_002D14f9_002D48b5_002D9f4e_002D7c447e7a97e9/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="SaveNewUserAsync #3" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::D633F42C-8E04-4272-9DF5-BDD3F1AA29F0::.NETCoreApp,Version=v3.1::AITIssueTracker.Test.v0.UserTest.SaveNewUserAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=e53022c1_002D820d_002D4e1e_002Db35f_002D9bf9820e45d5/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SaveNewUserAsync" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::D633F42C-8E04-4272-9DF5-BDD3F1AA29F0::.NETCoreApp,Version=v3.1::AITIssueTracker.Test.v0.UserTest.SaveNewUserAsync&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;xUnit::D633F42C-8E04-4272-9DF5-BDD3F1AA29F0::.NETCoreApp,Version=v3.1::AITIssueTracker.Test.v0.UserTest.GetAllUsersAsync&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	
+	</wpf:ResourceDictionary>

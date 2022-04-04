@@ -1,0 +1,37 @@
+
+### ================================
+@host = http://localhost:5000
+@version = api-version: 0.0
+@mediaType = Content-Type: application/json
+
+### ================================
+GET {{host}}/api/test
+{{version}}
+
+### ================================
+POST {{host}}/api/test
+{{version}}
+{{mediaType}}
+
+{
+    "name": "string",
+    "age": 0,
+    "birthDate": "2021-04-24T11:27:46.813",
+    "status": "Awake"
+}
+
+### ================================
+PUT {{host}}/api/test/string
+{{version}}
+{{mediaType}}
+
+{
+    "name": "Updated String",
+    "age": 0,
+    "birthDate": "2021-04-24T11:27:46.813",
+    "status": "Awake"
+}
+
+### ================================
+DELETE {{host}}/api/test/string
+{{version}}

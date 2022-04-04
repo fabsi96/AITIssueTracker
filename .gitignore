@@ -292,3 +292,7 @@ AITIssueTracker.Model/obj/rider.project.restore.info
 AITIssueTracker.API/bin/Debug/net5.0/System.Net.Http.Formatting.dll
 AITIssueTracker.API/obj/project.packagespec.json
 AITIssueTracker.API/obj/rider.project.restore.info
+
+**/.idea/**
+**/bin/**
+**/.vs/**

@@ -1,0 +1,9 @@
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\bin\Release\netstandard2.0\AITIssueTracker.Model.deps.json
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\bin\Release\netstandard2.0\AITIssueTracker.Model.dll
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\bin\Release\netstandard2.0\AITIssueTracker.Model.pdb
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\obj\Release\netstandard2.0\AITIssueTracker.Model.csprojAssemblyReference.cache
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\obj\Release\netstandard2.0\AITIssueTracker.Model.AssemblyInfoInputs.cache
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\obj\Release\netstandard2.0\AITIssueTracker.Model.AssemblyInfo.cs
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\obj\Release\netstandard2.0\AITIssueTracker.Model.csproj.CoreCompileInputs.cache
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\obj\Release\netstandard2.0\AITIssueTracker.Model.dll
+D:\MEGA\VisualStudioProjects\AITIssueTracker\AITIssueTracker.Model\obj\Release\netstandard2.0\AITIssueTracker.Model.pdb
