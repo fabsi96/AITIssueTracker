@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "W/Az+1muwZbt6LmRLqNmqvUbFprlFeS0EsAfPBcOj2otAsKdtBFUyN6cViGOHRkC9aVEiqvxzPy5Ed5ozy3NHw==",
+  "dgSpecHash": "TxKMB0grU9sEO6uIBEAXAJtReBT35Ys4EH5Tgf6WOGvwVFlxCLA8CqXeKR8XYnHy+Qu2IaHjs1lxL4GcOxtjDA==",
   "success": true,
-  "projectFilePath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Sync\\fabsi.IssueTracker.Sync.csproj",
+  "projectFilePath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Sync\\fabsi.IssueTracker.Sync.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fabia\\.nuget\\packages\\fluentvalidation\\10.0.3\\fluentvalidation.10.0.3.nupkg.sha512",
     "C:\\Users\\fabia\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.7\\microsoft.aspnet.webapi.client.5.2.7.nupkg.sha512",

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "k7JM/2c1NdFE50TM/8jxoQ1It1/qDVyhDxbnuuvGKXrv00yugqd9CNgiaDlR+HEOPtqSxjPQO8V1bBbr42OhUQ==",
+  "dgSpecHash": "I1My4iNWpjTSikw3z0khbOWqX8wvgGjaje3T4yD5dlu7rlbU0MKnlZbR0alfafpYspVs4btn2I6cQ9wd8Bjfww==",
   "success": true,
-  "projectFilePath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj",
+  "projectFilePath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fabia\\.nuget\\packages\\fluentvalidation\\10.0.3\\fluentvalidation.10.0.3.nupkg.sha512",
     "C:\\Users\\fabia\\.nuget\\packages\\microsoft.aspnetcore.antiforgery\\2.1.0\\microsoft.aspnetcore.antiforgery.2.1.0.nupkg.sha512",

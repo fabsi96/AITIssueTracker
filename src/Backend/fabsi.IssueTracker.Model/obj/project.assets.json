@@ -7583,11 +7583,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj",
+      "projectUniqueName": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj",
       "projectName": "fabsi.IssueTracker.Model",
-      "projectPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj",
+      "projectPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj",
       "packagesPath": "C:\\Users\\fabia\\.nuget\\packages\\",
-      "outputPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\obj\\",
+      "outputPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet"

@@ -8235,11 +8235,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Test\\fabsi.IssueTracker.Test.csproj",
+      "projectUniqueName": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Test\\fabsi.IssueTracker.Test.csproj",
       "projectName": "fabsi.IssueTracker.Test",
-      "projectPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Test\\fabsi.IssueTracker.Test.csproj",
+      "projectPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Test\\fabsi.IssueTracker.Test.csproj",
       "packagesPath": "C:\\Users\\fabia\\.nuget\\packages\\",
-      "outputPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Test\\obj\\",
+      "outputPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Test\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet"
@@ -8260,11 +8260,11 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.API\\fabsi.IssueTracker.API.csproj": {
-              "projectPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.API\\fabsi.IssueTracker.API.csproj"
+            "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.API\\fabsi.IssueTracker.API.csproj": {
+              "projectPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.API\\fabsi.IssueTracker.API.csproj"
             },
-            "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj": {
-              "projectPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj"
+            "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj": {
+              "projectPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj"
             }
           }
         }

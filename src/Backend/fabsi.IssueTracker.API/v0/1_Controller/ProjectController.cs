@@ -6,10 +6,14 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.API.v0._2_Manager.Contracts;
+using AITIssueTracker.API.v0._3_DAL;
 using AITIssueTracker.Model.v0;
 using AITIssueTracker.Model.v0._3_ViewModel;
 using AITIssueTracker.Model.v0._1_FormModel;
+using AITIssueTracker.Model.v0._2_EntityModel;
 using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using NpgsqlTypes;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace AITIssueTracker.API.v0._1_Controller
@@ -21,11 +25,6 @@ namespace AITIssueTracker.API.v0._1_Controller
     public class ProjectController : ControllerBase
     {
         private IProjectService Service { get; }
-<<<<<<< HEAD:fabsi.IssueTracker.API/v0/1_Controller/ProjectController.cs
-
-=======
-        
->>>>>>> master:AITIssueTracker.API/v0/1_Controller/ProjectController.cs
         public ProjectController(IProjectService service)
         {
             Service = service;
@@ -40,13 +39,8 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<IActionResult> GetAllProjectsAsync(
             [FromQuery] string filter)
         {
-<<<<<<< HEAD:fabsi.IssueTracker.API/v0/1_Controller/ProjectController.cs
-            List<ProjectView> allProjects = await Service.GetProjectsAsync(filter);
-            return allProjects is null ? NotFound() : Ok(allProjects);
-=======
             List<ProjectView> allProjects = await Service.GetAllProjectsAsync();
             return allProjects is null ? BadRequest() : Ok(allProjects);
->>>>>>> master:AITIssueTracker.API/v0/1_Controller/ProjectController.cs
         }
 
         /// <summary>
@@ -58,18 +52,12 @@ namespace AITIssueTracker.API.v0._1_Controller
         public async Task<IActionResult> PostNewProjectAsync(
             [FromBody] ProjectForm newProject)
         {
-<<<<<<< HEAD:fabsi.IssueTracker.API/v0/1_Controller/ProjectController.cs
-            ProjectView savedProject = await Service.SaveProjectAsync(newProject);
-
-            return savedProject is null ? BadRequest() : Ok(savedProject);
-=======
             if (Service.ProjectExists(newProject.Title))
             {
                 return BadRequest("Already exists");
             }
             ProjectView savedProject = await Service.SaveProjectAsync(newProject);
             return savedProject is null ? BadRequest("Could not be saved") : Ok(savedProject);
->>>>>>> master:AITIssueTracker.API/v0/1_Controller/ProjectController.cs
         }
 
         /// <summary>
@@ -100,12 +88,9 @@ namespace AITIssueTracker.API.v0._1_Controller
             [FromBody] ProjectUserForm userToProjectForm)
         {
             if (!await Service.AddUserToProjectAsync(userToProjectForm.Username, userToProjectForm.ProjectId))
-<<<<<<< HEAD:fabsi.IssueTracker.API/v0/1_Controller/ProjectController.cs
             {
-=======
->>>>>>> master:AITIssueTracker.API/v0/1_Controller/ProjectController.cs
                 return BadRequest();
-
+            }
             return Ok();
         }
 

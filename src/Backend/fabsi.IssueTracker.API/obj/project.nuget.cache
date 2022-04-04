@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/d5HexARi5ZCzB8v9oFVOR89GpImuLa8Yf53tRFNIq6XeH+HsGP1IOk764fHP/i1lIQqCo3ixCsErnfRASJzRQ==",
+  "dgSpecHash": "2nG1PeCO+FmY9QBkwUIM4mG/5TTTlJE+xPJFD0mJw6jMO7TJ/KpK4Qh9dsvTaDUqB2/eWkJOjyvP8GWA7KesUg==",
   "success": true,
-  "projectFilePath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.API\\fabsi.IssueTracker.API.csproj",
+  "projectFilePath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.API\\fabsi.IssueTracker.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\fabia\\.nuget\\packages\\abp\\6.3.0\\abp.6.3.0.nupkg.sha512",
     "C:\\Users\\fabia\\.nuget\\packages\\abp.entityframeworkcore.efplus\\6.3.0\\abp.entityframeworkcore.efplus.6.3.0.nupkg.sha512",

@@ -5715,11 +5715,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Sync\\fabsi.IssueTracker.Sync.csproj",
+      "projectUniqueName": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Sync\\fabsi.IssueTracker.Sync.csproj",
       "projectName": "fabsi.IssueTracker.Sync",
-      "projectPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Sync\\fabsi.IssueTracker.Sync.csproj",
+      "projectPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Sync\\fabsi.IssueTracker.Sync.csproj",
       "packagesPath": "C:\\Users\\fabia\\.nuget\\packages\\",
-      "outputPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Sync\\obj\\",
+      "outputPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Sync\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet"
@@ -5740,8 +5740,8 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "projectReferences": {
-            "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj": {
-              "projectPath": "D:\\MEGA\\fabsi.IssueTracker\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj"
+            "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj": {
+              "projectPath": "D:\\MEGA\\Intern\\Projekte\\fabsi.IssueTracker\\src\\Backend\\fabsi.IssueTracker.Model\\fabsi.IssueTracker.Model.csproj"
             }
           }
         }

@@ -3,12 +3,11 @@ using AITIssueTracker.API.v0._1_Controller;
 using AITIssueTracker.API.v0._2_Manager;
 using AITIssueTracker.API.v0._2_Manager.Contracts;
 using AITIssueTracker.API.v0._3_DAL;
+using AITIssueTracker.Model.v0._2_EntityModel;
 using FluentValidation.AspNetCore;
-<<<<<<< HEAD:fabsi.IssueTracker.API/Startup.cs
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-=======
->>>>>>> master:AITIssueTracker.API/Startup.cs
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,19 +27,10 @@ namespace AITIssueTracker.API
         }
 
         public void ConfigureServices(IServiceCollection services)
-<<<<<<< HEAD:fabsi.IssueTracker.API/Startup.cs
         {   
             // Enable comptroller's
-            services.AddControllers(options =>
-                {
-                    // options.Filters.Add<SomeFilterName>()
-                })
-                .AddFluentValidation()
-=======
-        {
             services.AddControllers()
-                .AddFluentValidation();
->>>>>>> master:AITIssueTracker.API/Startup.cs
+                .AddFluentValidation()
                 .AddNewtonsoftJson(setup => setup.SerializerSettings.Converters.Add(new StringEnumConverter()));
 
             services.InstallServicesInAssembly(Configuration);
@@ -61,19 +51,14 @@ namespace AITIssueTracker.API
             
             services.AddSingleton(dbSettings);
 
-<<<<<<< HEAD:fabsi.IssueTracker.API/Startup.cs
             services.AddTransient<IUserService, UserService>();
             
             // services.AddScoped<IProjectService, ProjectService>();
-            services.AddTransient<ProjectManager>();
             services.AddSingleton<ProjectContext>();
-=======
             services.AddTransient<IProjectService, ProjectManager>();
-            services.AddTransient<ProjectContext>();
 
-            services.AddTransient<UserManager>();
-            services.AddTransient<UserContext>();
->>>>>>> master:AITIssueTracker.API/Startup.cs
+            services.AddTransient<UserManager<User>>();
+            services.AddTransient<ProjectContext>();
 
             // services.AddTransient<IFeatureService, FeatureService>();
             services.AddTransient<FeatureManager>();

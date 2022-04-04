@@ -297,5 +297,19 @@ AITIssueTracker.API/obj/rider.project.restore.info
 **/.idea/**
 **/bin/**
 **/.vs/**
-=======
->>>>>>> master
+**/.idea/**
+**/.vs/**
+**/.vscode/**
+src/Server/FVBlazorTest/**
+src/Server/HomeWebsite.Api/images/**
+**/bin/**
+**/obj/**
+**/wwwroot/**
+**/http/**
+src/Server/.idea/**
+src/Server/.vs/**
+*.cache**
+**/build/**
+**/out/**
+**/images/**
+**DotSettings**
